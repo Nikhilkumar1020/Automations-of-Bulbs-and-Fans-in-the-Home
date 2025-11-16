@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Nikhil's Smart Home MQTT Dashboard</title>
+  <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: #0b1016;
+      color: #ffffff;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      margin: 0;
+      background: #1f2b38;
+      padding: 15px;
+      color: #00eaff;
+      letter-spacing: 1px;
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 20px;
+      gap: 20px;
+    }
+
+    .card {
+      background: #18222d;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(0, 255, 255, 0.15);
+      padding: 20px;
+      width: 300px;
+      transition: 0.2s;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+    }
+
+    .card h3 {
+      color: #00eaff;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      border: none;
+      border-radius: 6px;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .on { background: #00c853; }
+    .on:hover { background: #00e676; }
+
+    .off { background: #d50000; }
+    .off:hover { background: #ff1744; }
+
+    input[type="range"] {
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    #colorPicker {
+      width: 100%;
+      height: 40px;
+      border: none;
+      outline: none;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+
+    .status {
+      background: #121b24;
+      border-radius: 12px;
+      padding: 15px;
+      margin: 20px auto;
+      width: 350px;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .status span {
+      color: #00eaff;
+    }
+
+    .live {
+      color: #00eaff;
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+
+    .modeText {
+      font-weight: bold;
+    }
+    .auto { color: #ffd600; }
+    .manual { color: #00e676; }
+  </style>
+</head>
+<body>
+
+  <h1>🏠 Nikhil's Smart Home Dashboard</h1>
+
+  <div class="live" id="mqttStatus">🔌 Connecting to MQTT Broker...</div>
+
+  <div class="container">
+
+    <!-- Mode Control -->
+    <div class="card">
+      <h3>⚙️ Mode Control</h3>
+      <button onclick="toggleMode()">Toggle Mode</button>
+      <p>Current Mode: <span id="mode" class="modeText auto">AUTO</span></p>
+    </div>
+
+    <!-- Bulb Control -->
+    <div class="card">
+      <h3>💡 Bulb Control</h3>
+      <button class="on" onclick="publish('nikhil/home/control/bulb', 'ON')">Turn ON</button>
+      <button class="off" onclick="publish('nikhil/home/control/bulb', 'OFF')">Turn OFF</button>
+      <p>Status: <span id="bulbStatus">--</span></p>
+    </div>
+
+    <!-- Fan Control -->
+    <div class="card">
+      <h3>🌬 Fan Control</h3>
+      <button class="on" onclick="publish('nikhil/home/control/fan', 'ON')">Turn ON</button>
+      <button class="off" onclick="publish('nikhil/home/control/fan', 'OFF')">Turn OFF</button>
+
+      <br><br>
+      <label>Speed: <span id="speedVal">100%</span></label>
+      <input type="range" id="speedSlider" min="0" max="100" value="100" oninput="setFanSpeed(this.value)">
+      <p>Status: <span id="fanStatus">--</span></p>
+    </div>
+
+    <!-- RGB LED -->
+    <div class="card">
+      <h3>🎨 RGB LED</h3>
+      <input type="color" id="colorPicker" value="#ffffff" onchange="setColor(this.value)">
+      <p>Current Color: <span id="colorStatus">#FFFFFF</span></p>
+    </div>
+
+  </div>
+
+  <div class="status">
+    🌡 Temp: <span id="temp">--</span> °C <br>
+    💧 Humidity: <span id="hum">--</span> % <br>
+    🚶 Motion: <span id="motion">--</span> <br>
+    ⚙️ Mode: <span id="modeStat">--</span> <br>
+    💡 Bulb: <span id="bulbStat">--</span> <br>
+    🌬 Fan: <span id="fanStat">--</span> <br>
+    🌀 Fan Speed: <span id="speedDisplay">--</span> % <br>
+    🎨 RGB: <span id="rgbStat">#FFFFFF</span>
+  </div>
+
+<script>
+
+  // ---------------- MQTT Setup ------------------
+  const broker = "wss://broker.hivemq.com:8884/mqtt";
+
+  const client = mqtt.connect(broker, {
+    keepalive: 30,
+    reconnectPeriod: 1000,
+    clientId: "webclient_" + Math.random().toString(16).substr(2, 8)
+  });
+
+  const statusEl = document.getElementById("mqttStatus");
+
+  // ---------------- Connecting ----------------
+  client.on("connect", () => {
+    statusEl.textContent = "✅ Connected to MQTT Broker (HiveMQ)";
+
+    client.subscribe("nikhil/home/temp");
+    client.subscribe("nikhil/home/hum");
+    client.subscribe("nikhil/home/mode");
+    client.subscribe("nikhil/home/fan");
+    client.subscribe("nikhil/home/fan/speed");
+    client.subscribe("nikhil/home/bulb");
+    client.subscribe("nikhil/home/color");
+    client.subscribe("nikhil/home/motion");
+  });
+
+  client.on("reconnect", () => {
+    statusEl.textContent = "🔄 Reconnecting...";
+  });
+
+  client.on("error", () => {
+    statusEl.textContent = "❌ MQTT Error, Retrying...";
+  });
+
+  // ---------------- Handle Messages ----------------
+  client.on("message", (topic, message) => {
+    const msg = message.toString();
+    console.log(`📩 ${topic}: ${msg}`);
+
+    if (topic === "nikhil/home/temp") document.getElementById("temp").textContent = msg;
+    if (topic === "nikhil/home/hum") document.getElementById("hum").textContent = msg;
+    if (topic === "nikhil/home/motion") document.getElementById("motion").textContent = msg;
+
+    if (topic === "nikhil/home/mode") {
+      const modeEl = document.getElementById("mode");
+      const modeStat = document.getElementById("modeStat");
+      modeEl.textContent = msg;
+      modeStat.textContent = msg;
+
+      if (msg === "AUTO") {
+        modeEl.className = "modeText auto";
+      } else {
+        modeEl.className = "modeText manual";
+      }
+    }
+
+    if (topic === "nikhil/home/bulb") {
+      document.getElementById("bulbStatus").textContent = msg;
+      document.getElementById("bulbStat").textContent = msg;
+    }
+
+    if (topic === "nikhil/home/fan") {
+      document.getElementById("fanStatus").textContent = msg;
+      document.getElementById("fanStat").textContent = msg;
+    }
+
+    if (topic === "nikhil/home/fan/speed") {
+      document.getElementById("speedDisplay").textContent = msg;
+      document.getElementById("speedVal").textContent = msg + "%";
+      document.getElementById("speedSlider").value = msg;
+    }
+
+    if (topic === "nikhil/home/color") {
+      document.getElementById("colorStatus").textContent = msg;
+      document.getElementById("rgbStat").textContent = msg;
+      document.getElementById("colorPicker").value = msg;
+    }
+  });
+
+  // ---------------- Publish Functions ----------------
+  function publish(topic, message) {
+    client.publish(topic, message);
+    console.log(`📤 Published → ${topic} = ${message}`);
+  }
+
+  function setFanSpeed(value) {
+    document.getElementById("speedVal").textContent = value + "%";
+    client.publish("nikhil/home/control/fan/speed", value);
+  }
+
+  function setColor(color) {
+    document.getElementById("colorStatus").textContent = color.toUpperCase();
+    client.publish("nikhil/home/control/color", color);
+  }
+
+  function toggleMode() {
+    client.publish("nikhil/home/control/mode", "TOGGLE");
+  }
+
+</script>
+
+</body>
+</html>

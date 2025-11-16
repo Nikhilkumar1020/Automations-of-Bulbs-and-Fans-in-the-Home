@@ -1,0 +1,195 @@
+<svg viewBox="0 0 3840 2160" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <style>
+      .header-text { font-family: 'Segoe UI', Arial, sans-serif; font-size: 72px; font-weight: bold; fill: #1a1a1a; }
+      .section-title { font-family: 'Segoe UI', Arial, sans-serif; font-size: 56px; font-weight: bold; fill: #2c3e50; }
+      .box-text { font-family: 'Segoe UI', Arial, sans-serif; font-size: 42px; font-weight: 600; fill: white; text-anchor: middle; }
+      .label-text { font-family: 'Segoe UI', Arial, sans-serif; font-size: 36px; fill: #2c3e50; }
+      .arrow-text { font-family: 'Segoe UI', Arial, sans-serif; font-size: 32px; fill: #34495e; font-weight: 500; }
+      .subtitle { font-family: 'Segoe UI', Arial, sans-serif; font-size: 40px; fill: #555; }
+      
+      .box-sensor { fill: #3498db; stroke: #2980b9; stroke-width: 4; }
+      .box-input { fill: #e74c3c; stroke: #c0392b; stroke-width: 4; }
+      .box-process { fill: #f39c12; stroke: #d68910; stroke-width: 4; }
+      .box-output { fill: #27ae60; stroke: #229954; stroke-width: 4; }
+      .box-network { fill: #9b59b6; stroke: #8e44ad; stroke-width: 4; }
+      .box-display { fill: #16a085; stroke: #117a65; stroke-width: 4; }
+      
+      .arrow { stroke: #34495e; stroke-width: 3; fill: none; marker-end: url(#arrowhead); }
+      .arrow-dashed { stroke: #bdc3c7; stroke-width: 3; stroke-dasharray: 10,10; fill: none; marker-end: url(#arrowhead-gray); }
+      
+      .section-box { fill: #ecf0f1; stroke: #bdc3c7; stroke-width: 2; }
+      .legend-box { fill: white; stroke: #95a5a6; stroke-width: 2; }
+    </style>
+    
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#34495e" />
+    </marker>
+    <marker id="arrowhead-gray" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#bdc3c7" />
+    </marker>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="3840" height="2160" fill="#ffffff"/>
+  
+  <!-- Header -->
+  <text x="1920" y="100" class="header-text" text-anchor="middle">Smart Bulb & Fan IoT System - Workflow</text>
+  <text x="1920" y="160" class="subtitle" text-anchor="middle">MQTT + Auto/Manual + Button Control</text>
+  
+  <!-- ===== SECTION 1: INPUT DEVICES ===== -->
+  <rect x="80" y="280" width="1000" height="800" class="section-box" rx="20"/>
+  <text x="130" y="340" class="section-title">📥 INPUT DEVICES</text>
+  
+  <!-- Sensors -->
+  <rect x="120" y="400" width="380" height="140" class="box-sensor" rx="15"/>
+  <text x="310" y="485" class="box-text">DHT22</text>
+  <text x="310" y="520" class="box-text">Temp/Humidity</text>
+  
+  <rect x="540" y="400" width="380" height="140" class="box-sensor" rx="15"/>
+  <text x="730" y="485" class="box-text">PIR Motion</text>
+  <text x="730" y="520" class="box-text">Sensor</text>
+  
+  <!-- Buttons -->
+  <rect x="120" y="600" width="280" height="140" class="box-input" rx="15"/>
+  <text x="260" y="680" class="box-text">Mode Btn</text>
+  <text x="260" y="715" class="box-text">GPIO 32</text>
+  
+  <rect x="440" y="600" width="280" height="140" class="box-input" rx="15"/>
+  <text x="580" y="680" class="box-text">Bulb Btn</text>
+  <text x="580" y="715" class="box-text">GPIO 33</text>
+  
+  <rect x="760" y="600" width="280" height="140" class="box-input" rx="15"/>
+  <text x="900" y="680" class="box-text">Fan Btn</text>
+  <text x="900" y="715" class="box-text">GPIO 5</text>
+  
+  <!-- WiFi Input -->
+  <rect x="120" y="800" width="920" height="140" class="box-network" rx="15"/>
+  <text x="580" y="880" class="box-text">MQTT Subscribe Topics</text>
+  <text x="580" y="920" class="box-text">Receive Commands from Dashboard</text>
+  
+  <!-- ===== SECTION 2: PROCESSING CORE ===== -->
+  <rect x="1140" y="280" width="1000" height="800" class="section-box" rx="20"/>
+  <text x="1190" y="340" class="section-title">⚙️ PROCESSING CORE</text>
+  
+  <!-- Main Loop -->
+  <rect x="1180" y="400" width="920" height="120" class="box-process" rx="15"/>
+  <text x="1640" y="465" class="box-text">Main Loop (100ms cycle)</text>
+  
+  <!-- Decision Logic -->
+  <rect x="1180" y="570" width="920" height="120" class="box-process" rx="15"/>
+  <text x="1640" y="635" class="box-text">Auto/Manual Mode Logic</text>
+  
+  <!-- Button Debounce -->
+  <rect x="1180" y="740" width="920" height="120" class="box-process" rx="15"/>
+  <text x="1640" y="805" class="box-text">Button Debounce (400ms)</text>
+  
+  <!-- State Management -->
+  <rect x="1180" y="910" width="920" height="120" class="box-process" rx="15"/>
+  <text x="1640" y="975" class="box-text">Device State Management</text>
+  
+  <!-- ===== SECTION 3: OUTPUT DEVICES ===== -->
+  <rect x="2200" y="280" width="1000" height="800" class="section-box" rx="20"/>
+  <text x="2250" y="340" class="section-title">📤 OUTPUT DEVICES</text>
+  
+  <!-- LED Bulb -->
+  <rect x="2240" y="400" width="380" height="140" class="box-output" rx="15"/>
+  <text x="2430" y="485" class="box-text">LED Bulb</text>
+  <text x="2430" y="520" class="box-text">GPIO 2</text>
+  
+  <!-- Fan -->
+  <rect x="2660" y="400" width="380" height="140" class="box-output" rx="15"/>
+  <text x="2850" y="485" class="box-text">Fan (PWM)</text>
+  <text x="2850" y="520" class="box-text">GPIO 4</text>
+  
+  <!-- RGB LED -->
+  <rect x="2240" y="600" width="380" height="140" class="box-output" rx="15"/>
+  <text x="2430" y="680" class="box-text">RGB LED</text>
+  <text x="2430" y="715" class="box-text">GPIO 25/26/27</text>
+  
+  <!-- Relay -->
+  <rect x="2660" y="600" width="380" height="140" class="box-output" rx="15"/>
+  <text x="2850" y="680" class="box-text">Relay</text>
+  <text x="2850" y="715" class="box-text">GPIO 13</text>
+  
+  <!-- OLED Display -->
+  <rect x="2240" y="800" width="800" height="140" class="box-display" rx="15"/>
+  <text x="2640" y="880" class="box-text">OLED Display (128x64)</text>
+  <text x="2640" y="920" class="box-text">Status & Sensor Data</text>
+  
+  <!-- ===== SECTION 4: NETWORK ===== -->
+  <rect x="80" y="1150" width="3680" height="380" class="section-box" rx="20"/>
+  <text x="130" y="1210" class="section-title">🌐 MQTT NETWORK LAYER</text>
+  
+  <!-- MQTT Broker -->
+  <rect x="1400" y="1270" width="1040" height="160" class="box-network" rx="15"/>
+  <text x="1920" y="1350" class="box-text">HiveMQ Broker</text>
+  <text x="1920" y="1390" class="box-text">broker.hivemq.com</text>
+  
+  <!-- Publish Topics -->
+  <rect x="120" y="1270" width="1160" height="160" class="box-network" rx="15"/>
+  <text x="700" y="1335" class="box-text">📤 PUBLISH TOPICS</text>
+  <text x="700" y="1375" class="box-text">temp, humidity, bulb_state,</text>
+  <text x="700" y="1410" class="box-text">fan_state, fan_speed, color</text>
+  
+  <!-- Subscribe Topics -->
+  <rect x="2620" y="1270" width="1140" height="160" class="box-network" rx="15"/>
+  <text x="3190" y="1335" class="box-text">📥 SUBSCRIBE TOPICS</text>
+  <text x="3190" y="1375" class="box-text">control/bulb, control/fan,</text>
+  <text x="3190" y="1410" class="box-text">control/fan/speed, control/mode</text>
+  
+  <!-- ===== SECTION 5: FLOW LOGIC ===== -->
+  <rect x="80" y="1600" width="3680" height="520" class="section-box" rx="20"/>
+  <text x="130" y="1660" class="section-title">🔄 OPERATIONAL FLOW</text>
+  
+  <!-- Auto Mode -->
+  <rect x="180" y="1740" width="900" height="340" class="legend-box" rx="15" stroke="#3498db" stroke-width="3"/>
+  <text x="630" y="1800" class="label-text" style="font-weight: bold; fill: #3498db;">AUTO MODE</text>
+  <text x="200" y="1860" class="label-text">✓ PIR detects motion</text>
+  <text x="200" y="1920" class="label-text">✓ Turn ON bulb & fan</text>
+  <text x="200" y="1980" class="label-text">✓ Check temperature</text>
+  <text x="200" y="2040" class="label-text">✓ 30-sec auto-off timer</text>
+  
+  <!-- Manual Mode -->
+  <rect x="1160" y="1740" width="900" height="340" class="legend-box" rx="15" stroke="#e74c3c" stroke-width="3"/>
+  <text x="1610" y="1800" class="label-text" style="font-weight: bold; fill: #e74c3c;">MANUAL MODE</text>
+  <text x="1180" y="1860" class="label-text">✓ Button toggles devices</text>
+  <text x="1180" y="1920" class="label-text">✓ PIR ignored</text>
+  <text x="1180" y="1980" class="label-text">✓ Remote MQTT control</text>
+  <text x="1180" y="2040" class="label-text">✓ State persists until change</text>
+  
+  <!-- Dashboard -->
+  <rect x="2140" y="1740" width="900" height="340" class="legend-box" rx="15" stroke="#9b59b6" stroke-width="3"/>
+  <text x="2590" y="1800" class="label-text" style="font-weight: bold; fill: #9b59b6;">DASHBOARD</text>
+  <text x="2160" y="1860" class="label-text">✓ Real-time monitoring</text>
+  <text x="2160" y="1920" class="label-text">✓ Send MQTT commands</text>
+  <text x="2160" y="1980" class="label-text">✓ View sensor data</text>
+  <text x="2160" y="2040" class="label-text">✓ Control RGB colors</text>
+  
+  <!-- ===== ARROWS / CONNECTIONS ===== -->
+  <!-- Input to Processing -->
+  <path d="M 1080 700 L 1140 700" class="arrow"/>
+  <text x="1100" y="680" class="arrow-text">Read</text>
+  
+  <!-- Processing to Output -->
+  <path d="M 2100 700 L 2200 700" class="arrow"/>
+  <text x="2140" y="680" class="arrow-text">Control</text>
+  
+  <!-- Processing to MQTT Publish -->
+  <path d="M 1640 910 L 1640 1010 L 700 1010 L 700 1270" class="arrow"/>
+  <text x="1560" y="1050" class="arrow-text">Send Data</text>
+  
+  <!-- MQTT Subscribe to Processing -->
+  <path d="M 3190 1430 L 3190 1500 L 2100 1500 L 2100 1030" class="arrow"/>
+  <text x="2600" y="1450" class="arrow-text">Receive Commands</text>
+  
+  <!-- Output to MQTT -->
+  <path d="M 2640 940 L 2640 1010 L 3190 1010 L 3190 1270" class="arrow"/>
+  <text x="2950" y="1050" class="arrow-text">Publish State</text>
+  
+  <!-- ===== LEGEND ===== -->
+  <rect x="80" y="2130" width="3680" height="10" fill="#ecf0f1"/>
+  <text x="600" y="2100" class="label-text" style="font-size: 32px; font-weight: bold;">Key Features:</text>
+  <text x="100" y="2150" class="label-text" style="font-size: 30px;">• WiFi: ESP32 @ 2.4GHz | • MQTT Protocol | • Real-time Sync</text>
+  <text x="100" y="2200" class="label-text" style="font-size: 30px;">• Debounce: 400ms | • Motion Timeout: 30sec | • Update Cycle: 100ms</text>
+</svg>
